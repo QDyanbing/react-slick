@@ -4,100 +4,98 @@ import React from "react";
 import { clsx } from "clsx";
 import { canGoNext } from "./utils/innerSliderUtils";
 
-export class PrevArrow extends React.PureComponent {
-  clickHandler(options, e) {
+export const PrevArrow = ({
+  currentSlide,
+  slideCount,
+  slidesToShow,
+  infinite,
+  prevArrow: customPrevArrow,
+  clickHandler
+}) => {
+  const disabled =
+    !infinite && (currentSlide === 0 || slideCount <= slidesToShow);
+
+  const prevClasses = {
+    "slick-arrow": true,
+    "slick-prev": true,
+    "slick-disabled": disabled
+  };
+
+  const prevHandler = (e) => {
     if (e) {
       e.preventDefault();
     }
-    this.props.clickHandler(options, e);
+    clickHandler({ message: "previous" }, e);
+  };
+
+  const prevArrowProps = {
+    key: "0",
+    "data-role": "none",
+    className: clsx(prevClasses),
+    style: { display: "block" },
+    onClick: disabled ? null : prevHandler
+  };
+
+  const customProps = { currentSlide, slideCount };
+
+  if (customPrevArrow) {
+    return React.cloneElement(customPrevArrow, {
+      ...prevArrowProps,
+      ...customProps
+    });
   }
-  render() {
-    let prevClasses = { "slick-arrow": true, "slick-prev": true };
-    let prevHandler = this.clickHandler.bind(this, { message: "previous" });
 
-    if (
-      !this.props.infinite &&
-      (this.props.currentSlide === 0 ||
-        this.props.slideCount <= this.props.slidesToShow)
-    ) {
-      prevClasses["slick-disabled"] = true;
-      prevHandler = null;
-    }
+  return (
+    <button key="0" type="button" {...prevArrowProps}>
+      {" "}
+      Previous
+    </button>
+  );
+};
 
-    let prevArrowProps = {
-      key: "0",
-      "data-role": "none",
-      className: clsx(prevClasses),
-      style: { display: "block" },
-      onClick: prevHandler
-    };
-    let customProps = {
-      currentSlide: this.props.currentSlide,
-      slideCount: this.props.slideCount
-    };
-    let prevArrow;
+export const NextArrow = ({
+  currentSlide,
+  slideCount,
+  nextArrow: customNextArrow,
+  clickHandler,
+  ...props
+}) => {
+  const disabled = !canGoNext({ ...props, currentSlide, slideCount });
 
-    if (this.props.prevArrow) {
-      prevArrow = React.cloneElement(this.props.prevArrow, {
-        ...prevArrowProps,
-        ...customProps
-      });
-    } else {
-      prevArrow = (
-        <button key="0" type="button" {...prevArrowProps}>
-          {" "}
-          Previous
-        </button>
-      );
-    }
+  const nextClasses = {
+    "slick-arrow": true,
+    "slick-next": true,
+    "slick-disabled": disabled
+  };
 
-    return prevArrow;
-  }
-}
-
-export class NextArrow extends React.PureComponent {
-  clickHandler(options, e) {
+  const nextHandler = (e) => {
     if (e) {
       e.preventDefault();
     }
-    this.props.clickHandler(options, e);
+    clickHandler({ message: "next" }, e);
+  };
+
+  const nextArrowProps = {
+    key: "1",
+    "data-role": "none",
+    className: clsx(nextClasses),
+    style: { display: "block" },
+    onClick: disabled ? null : nextHandler
+  };
+
+  const customProps = { currentSlide, slideCount };
+
+  if (customNextArrow) {
+    return React.cloneElement(customNextArrow, {
+      ...nextArrowProps,
+      ...customProps
+    });
   }
-  render() {
-    let nextClasses = { "slick-arrow": true, "slick-next": true };
-    let nextHandler = this.clickHandler.bind(this, { message: "next" });
 
-    if (!canGoNext(this.props)) {
-      nextClasses["slick-disabled"] = true;
-      nextHandler = null;
-    }
-
-    let nextArrowProps = {
-      key: "1",
-      "data-role": "none",
-      className: clsx(nextClasses),
-      style: { display: "block" },
-      onClick: nextHandler
-    };
-    let customProps = {
-      currentSlide: this.props.currentSlide,
-      slideCount: this.props.slideCount
-    };
-    let nextArrow;
-
-    if (this.props.nextArrow) {
-      nextArrow = React.cloneElement(this.props.nextArrow, {
-        ...nextArrowProps,
-        ...customProps
-      });
-    } else {
-      nextArrow = (
-        <button key="1" type="button" {...nextArrowProps}>
-          {" "}
-          Next
-        </button>
-      );
-    }
-
-    return nextArrow;
-  }
-}
+  return (
+    <button key="1" type="button" {...nextArrowProps}>
+      {" "}
+      Next
+    </button>
+  );
+};
