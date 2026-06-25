@@ -10,10 +10,9 @@ const Slider = React.forwardRef((props, ref) => {
   const [breakpoint, setBreakpoint] = React.useState(null);
   const responsiveMediaHandlers = React.useRef([]);
   const innerSlider = React.useRef(null);
-  const innerSliderRefHandler = React.useCallback(
-    (slider) => (innerSlider.current = slider),
-    []
-  );
+  const innerSliderRefHandler = React.useCallback((slider) => {
+    innerSlider.current = slider;
+  }, []);
 
   const media = (query, handler) => {
     // javascript handler for  css media query
