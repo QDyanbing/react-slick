@@ -200,26 +200,32 @@ const renderSlides = (spec) => {
   }
 };
 
-export class Track extends React.PureComponent {
-  node = null;
-
-  handleRef = (ref) => {
-    this.node = ref;
-  };
-
-  render() {
-    const slides = renderSlides(this.props);
-    const { onMouseEnter, onMouseOver, onMouseLeave } = this.props;
+export const Track = React.memo(
+  React.forwardRef((props, ref) => {
+    const nodeRef = React.useRef(null);
+    const slides = renderSlides(props);
+    const { onMouseEnter, onMouseOver, onMouseLeave } = props;
     const mouseEvents = { onMouseEnter, onMouseOver, onMouseLeave };
+
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        get node() {
+          return nodeRef.current;
+        }
+      }),
+      []
+    );
+
     return (
       <div
-        ref={this.handleRef}
+        ref={nodeRef}
         className="slick-track"
-        style={this.props.trackStyle}
+        style={props.trackStyle}
         {...mouseEvents}
       >
         {slides}
       </div>
     );
-  }
-}
+  })
+);
